@@ -453,9 +453,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Log.w("First point", getCompleteAddress(curLocation.latitude, curLocation.longitude));
 
-        // Add district of first point and last point on the Polyline
+        // Add district of first point on the Polyline
         setOfDistrict.add(getDistrictFromlatLng(curLocation.latitude, curLocation.longitude));
-        setOfDistrict.add(getDistrictOfPoint(route, route.points.size() - 1));
 
         for (int i = 0; i < route.points.size(); i++)
         {
@@ -469,6 +468,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
+        // Add district of first point on the Polyline// Add district of first point on the Polyline
+        String lastDistrict = getDistrictOfPoint(route, route.points.size() - 1);
+        if (!setOfDistrict.contains(lastDistrict))
+        {
+            setOfDistrict.add(lastDistrict);
+        }
+
         Log.w("Set of District", Arrays.toString(setOfDistrict.toArray()));
 
         showSetOfDistrictDialog(setOfDistrict);
@@ -476,8 +482,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void showSetOfDistrictDialog(ArrayList<String> setOfDistrict) {
         final ProgressDialog progress = new ProgressDialog(this);
-        progress.setTitle("You will cross these districts. Grab packages belong to them");
-        progress.setMessage(Arrays.toString(setOfDistrict.toArray()));
+        progress.setTitle("You will cross these districts. Grab packages belong to them only");
+        progress.setMessage(Arrays.toString(setOfDistrict.toArray()) +  "\n" +  "\n" + "Transfer  packages  to "  + setOfDistrict.get(1) + " because it 's the nearest area that is adjacent to your area !");
         progress.show();
 
         Runnable progressRunnable = new Runnable() {
@@ -489,7 +495,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         };
 
         Handler pdCanceller = new Handler();
-        pdCanceller.postDelayed(progressRunnable, 6000);
+        pdCanceller.postDelayed(progressRunnable, 8000);
     }
 
     @Nullable
